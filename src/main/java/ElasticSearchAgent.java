@@ -24,16 +24,6 @@ public class ElasticSearchAgent {
     private RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost(HOST, PORT, SCHEME)));
     private Gson gson = new Gson();
 
-/*    ElasticSearchAgent () {
-        this.node = NodeBuilder.nodeBuilder().settings(Settings.settingsBuilder()
-                .put("path.home", "/usr/share/elasticsearch"))
-                .clusterName("elasticsearch")
-                .client(true)
-                .node();
-        this.client = this.node.client();
-        this.gson = new Gson();
-    }*/
-
     public void addNews(List<News> news){
         for (News news_ : news) {
             IndexRequest request = new IndexRequest(INDEX, "doc");
