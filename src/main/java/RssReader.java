@@ -1,5 +1,3 @@
-import com.rometools.rome.io.FeedException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import java.util.concurrent.Future;
  * Created by frozenfoot on 29.05.18.
  */
 public class RssReader {
-    public static void main(String[] args) throws IOException, FeedException, ExecutionException, InterruptedException {
+    public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
         List<URL> sources  = new ArrayList<>();
         sources.add(new URL("https://lenta.ru/rss/news"));
         sources.add(new URL("http://www.aif.ru/rss/news.php"));
@@ -33,12 +31,16 @@ public class RssReader {
 
         System.out.println(result.size());
 
-        for (News news: result) {
-            System.out.println(news.getUrl());
-            System.out.println(news.getPublishDate());
-            System.out.println(news.getTitle());
-            System.out.println(news.getDescription());
-        }
+//        for (News news: result) {
+//            System.out.println(news.getUrl());
+//            System.out.println(news.getPublishDate());
+//            System.out.println(news.getTitle());
+//            System.out.println(news.getDescription());
+//        }
+        ElasticSearchAgent agent = new ElasticSearchAgent();
+        agent.addNews(result);
+        List<News> fromElastic = agent.getAllNews();
+        System.out.println(fromElastic.size());
     }
 //
 //        SyndFeedInput input = new SyndFeedInput();
