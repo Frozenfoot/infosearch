@@ -48,4 +48,5 @@ public class News {
     public void setPublishDate(Date publishDate) {
         this.publishDate = publishDate;
     }
+
 }

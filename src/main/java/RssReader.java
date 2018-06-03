@@ -12,7 +12,7 @@ import java.util.concurrent.Future;
  */
 public class RssReader {
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        List<URL> sources  = new ArrayList<>();
+        List<URL> sources = new ArrayList<>();
         sources.add(new URL("https://lenta.ru/rss/news"));
         sources.add(new URL("http://www.aif.ru/rss/news.php"));
         sources.add(new URL("https://www.kommersant.ru/RSS/main.xml"));
@@ -20,44 +20,20 @@ public class RssReader {
 
         final ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
         final List<Future<List<News>>> futures = new ArrayList<>();
-        for (URL site : sources){
+        for (URL site : sources) {
             futures.add(threadPool.submit(new GetNewsFromSite(site)));
         }
 
         final List<News> result = new ArrayList<>();
-        for (Future<List<News>> future : futures){
+        for (Future<List<News>> future : futures) {
             result.addAll(future.get());
         }
 
         System.out.println(result.size());
 
-//        for (News news: result) {
-//            System.out.println(news.getUrl());
-//            System.out.println(news.getPublishDate());
-//            System.out.println(news.getTitle());
-//            System.out.println(news.getDescription());
-//        }
         ElasticSearchAgent agent = new ElasticSearchAgent();
         agent.addNews(result);
-        List<News> fromElastic = agent.getAllNews();
-        System.out.println(fromElastic.size());
+        List<News> similar = agent.getSimilarNews(result.get(0), 5);
+        System.out.println(similar);
     }
-//
-//        SyndFeedInput input = new SyndFeedInput();
-//        SyndFeed feed = input.build(new XmlReader(sources.get(0)));
-////        System.out.println(feed);
-//        for(URL rssUrl : sources){
-//            SyndFeedInput input = new SyndFeedInput();
-//            SyndFeed feed = input.build(new XmlReader(rssUrl));
-//            for (SyndEntry entry : feed.getEntries()){
-//                System.out.println(entry.getTitle());
-//                System.out.println(entry.getDescription().getValue());
-//                System.out.println(entry.getPublishedDate());
-//            }
-//        }
-//
-//        final List<News> result = sources.parallelStream()
-//                .flatMap()
-//                .collect(Collectors.toList());
-//    }
 }
