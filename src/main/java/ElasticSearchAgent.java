@@ -15,6 +15,8 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.MoreLikeThisQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.sort.ScoreSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,6 +69,7 @@ public class ElasticSearchAgent {
         SearchSourceBuilder builder = new SearchSourceBuilder();
         builder.query(QueryBuilders.moreLikeThisQuery(new String[]{"title"}, new MoreLikeThisQueryBuilder.Item[]{newsItem}));
         builder.size(limit);
+        builder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
 
         SearchRequest request = new SearchRequest();
         request.source(builder);
@@ -85,7 +88,7 @@ public class ElasticSearchAgent {
         request.source(searchSourceBuilder);
         SearchResponse searchResponse = client.search(request);
         String scrollId = searchResponse.getScrollId();
-        
+
         List<News> result = new ArrayList<>();
         searchResponse.getHits().iterator().forEachRemaining(h -> result.add(gson.fromJson(
                 h.getSourceAsString(), News.class
