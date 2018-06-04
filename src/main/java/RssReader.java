@@ -35,5 +35,6 @@ public class RssReader {
         agent.addNews(result);
         List<News> similar = agent.getSimilarNews(result.get(0), 5);
         System.out.println(similar);
+        agent.shutDown();
     }
 }

@@ -67,7 +67,7 @@ public class ElasticSearchAgent {
 
         MoreLikeThisQueryBuilder.Item newsItem = new MoreLikeThisQueryBuilder.Item(INDEX, "doc", newsHash);
         SearchSourceBuilder builder = new SearchSourceBuilder();
-        builder.query(QueryBuilders.moreLikeThisQuery(new String[]{"title"}, new MoreLikeThisQueryBuilder.Item[]{newsItem}));
+        builder.query(QueryBuilders.moreLikeThisQuery(new String[]{"title, description"}, new MoreLikeThisQueryBuilder.Item[]{newsItem}));
         builder.size(limit);
         builder.sort(new ScoreSortBuilder().order(SortOrder.DESC));
 
@@ -77,6 +77,10 @@ public class ElasticSearchAgent {
         client.search(request).getHits().forEach(h -> result.add(gson.fromJson(h.getSourceAsString(), News.class)));
 
         return result;
+    }
+
+    public void shutDown() throws IOException {
+        client.close();
     }
 
     public List<News> getAllNews() throws IOException {
